@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bael Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@600;700&family=Great+Vibes&family=Playfair+Display:wght@700&family=Inter&display=swap" rel="stylesheet">
+  <style>
+    /* Глобальные стили */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: white;
+      background-color: #000;
+    }
+    /* Шапка */
+    header {
+      background-attachment: fixed;
+      background-image: url('bael_library_bg_clean.png');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    header h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 5em;
+      margin-bottom: 20px;
+      text-shadow: 0 3px 12px rgba(0,0,0,0.7);
+    }
+    header a {
+      background: linear-gradient(135deg, #ffcf80, #ffa500);
+      color: #000;
+      padding: 16px 48px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1.2em;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+    header a:hover {
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+      transform: translateY(-2px);
+    }
+    header a:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    /* Секция блока с книгами */
+    .book-scroll {
+      position: relative;
+    }
+    .book-scroll .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2em;
+      background: rgba(0, 0, 0, 0.4);
+      color: #ffcf80;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 2;
+      user-select: none;
+    }
+    .book-scroll .arrow.left {
+      left: 0;
+    }
+    .book-scroll .arrow.right {
+      right: 0;
+    }
+    .book-scroll .scroll-container {
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      padding: 20px 40px;
+    }
+    .scroll-container > div {
+      display: inline-block;
+      width: 240px;
+      margin-right: 40px;
+      text-align: center;
+      vertical-align: top;
+      height: 500px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .scroll-container > div:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px rgba(255, 207, 128, 0.4);
+    }
+    .book-cover {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+    .btn-group a {
+      display: inline-block;
+      margin: 10px 5px;
+      padding: 10px 16px;
+      background: #444;
+      color: white;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+    /* Секция о проекте */
+    section {
+      padding: 60px 20px;
+      margin: auto;
+    }
+    /* Блок «О Bael Library» */
+    .about-section {
+      background: rgba(20,20,20,0.8);
+      padding: 80px 40px;
+      margin: 40px 0;
+      border-radius: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .about-section h2 {
+      text-align: center;
+      font-family: 'Spectral', serif;
+      font-size: 2.4em;
+      margin-bottom: 30px;
+    }
+    .about-section p {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+      line-height: 1.8;
+      font-size: 1.15em;
+    }
+    /* Футер */
+    footer {
+      background: #111;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    /* Поп-ап для подписки */
+    #subscribe-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #subscribe-modal .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+    #subscribe-modal input[type="email"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    #subscribe-modal button {
+      background: linear-gradient(135deg, #ffcf80, #ffa500);
+      color: #000;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #subscribe-modal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5em;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo_cat_book.png" alt="Логотип Bael Library" style="max-height: 180px; margin-bottom: 20px;">
+    <h1>Книги с характером. Магия, страсть и немного сарказма.</h1>
+    <a href="#book">Читать</a>
+  </header>
+
+  <!-- Блок с книгами -->
+  <section id="book">
+    <h2 style="text-align: center; font-family: 'Spectral', serif; font-size: 2.2em; margin-bottom: 20px;">Наши книги</h2>
+  </section>
+  <div class="book-scroll" style="max-width: 100%;">
+    <div class="arrow left" onclick="scrollBooks('left')">❮</div>
+    <div class="arrow right" onclick="scrollBooks('right')">❯</div>
+    <div class="scroll-container">
+      <div>
+        <a href="book_omega.html" style="text-decoration: none; color: inherit;">
+          <img src="book_cover.jpg" alt="Плохо быть Омегой" class="book-cover">
+          <h3 style="margin-top: 10px;">Плохо быть Омегой<br>(особенно, если твой<br>Альфа — идиот)</h3>
+          <p style="font-size: 0.9em; color: #ccc;">Кофе, оборотни, юмор</p>
+        </a>
+      </div>
+      <div style="position: relative; opacity: 0.6;">
+        <img src="book_seo_preview.jpg" alt="Новая книга скоро" class="book-cover" style="filter: grayscale(1);">
+        <div style="position: absolute; top: 10px; left: 10px; background: #ffcf80; color: black; padding: 4px 8px; font-size: 0.8em; font-weight: bold; border-radius: 6px;">Скоро</div>
+        <h3 style="margin-top: 10px;">Возрождение:<br>единственная избранница<br>миллиардера</h3>
+        <p style="font-size: 0.9em; color: #aaa;">СЕО, магия и реинкарнация</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Блок «О Bael Library» -->
+  <section class="about-section">
+    <h2>О Bael Library</h2>
+    <div style="text-align: center;">
+      <p>
+        <strong>Bael Library</strong> — это авторские миры с характером: от волчьей страсти до философской реинкарнации.
+      </p>
+      <p>
+        Здесь герои живут вне сценариев, умирают не навсегда, а магия подчиняется логике (ну почти всегда).
+      </p>
+      <p>
+        Мы создаём истории, в которых хочется остаться: с сарказмом, драмой, демонами и шёпотом звёзд.
+      </p>
+    </div>
+  </section>
+
+  <!-- Поп-ап для подписки -->
+  <div id="subscribe-modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="document.getElementById('subscribe-modal').style.display='none'">&times;</span>
+      <h2 style="font-family: 'Spectral', serif; margin-bottom: 10px;">Подписаться на новости</h2>
+      <p>Будьте в курсе новых релизов и акций. Введите ваш e-mail:</p>
+      <input type="email" placeholder="Ваш email">
+      <br>
+      <button>Подписаться</button>
+    </div>
+  </div>
+
+  <!-- Футер -->
+  <footer>
+    <p style="text-align: center; font-family: 'Spectral', serif; font-size: 1.1em; color: #ccc;">Следите за нами:</p>
+    <div style="text-align: center;">
+      <a href="https://t.me/bael_library" target="_blank" style="margin: 0 10px; display: inline-block;">
+        <!-- Telegram SVG Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" viewBox="0 0 48 48">
+          <linearGradient id="BiF7D16UlC0RZ_VqXJHnXa_oWiuH0jFiU0R_gr1" x1="9.858" x2="38.142" y1="9.858" y2="38.142" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#33bef0"/><stop offset="1" stop-color="#0a85d9"/></linearGradient>
+          <path fill="url(#BiF7D16UlC0RZ_VqXJHnXa_oWiuH0jFiU0R_gr1)" d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z"/>
+          <path d="M10.119,23.466c8.155-3.695,17.733-7.704,19.208-8.284c3.252-1.279,4.67,0.028,4.448,2.113	c-0.273,2.555-1.567,9.99-2.363,15.317c-0.466,3.117-2.154,4.072-4.059,2.863c-1.445-0.917-6.413-4.17-7.72-5.282	c-0.891-0.758-1.512-1.608-0.88-2.474c0.185-0.253,0.658-0.763,0.921-1.017c1.319-1.278,1.141-1.553-0.454-0.412	c-0.19,0.136-1.292,0.935-1.745,1.237c-1.11,0.74-2.131,0.78-3.862,0.192c-1.416-0.481-2.776-0.852-3.634-1.223	C8.794,25.983,8.34,24.272,10.119,23.466z" opacity=".05"/>
+          <path d="M10.836,23.591c7.572-3.385,16.884-7.264,18.246-7.813c3.264-1.318,4.465-0.536,4.114,2.011	c-0.326,2.358-1.483,9.654-2.294,14.545c-0.478,2.879-1.874,3.513-3.692,2.337c-1.139-0.734-5.723-3.754-6.835-4.633	c-0.86-0.679-1.751-1.463-0.71-2.598c0.348-0.379,2.27-2.234,3.707-3.614c0.833-0.801,0.536-1.196-0.469-0.508	c-1.843,1.263-4.858,3.262-5.396,3.625c-1.025,0.69-1.988,0.856-3.664,0.329c-1.321-0.416-2.597-0.819-3.262-1.078	C9.095,25.618,9.075,24.378,10.836,23.591z" opacity=".07"/>
+          <path fill="#fff" d="M11.553,23.717c6.99-3.075,16.035-6.824,17.284-7.343c3.275-1.358,4.28-1.098,3.779,1.91	c-0.36,2.162-1.398,9.319-2.226,13.774c-0.491,2.642-1.593,2.955-3.325,1.812c-0.833-0.55-5.038-3.331-5.951-3.984	c-0.833-0.595-1.982-1.311-0.541-2.721c0.513-0.502,3.874-3.712,6.493-6.21c0.343-0.328-0.088-0.867-0.484-0.604	c-3.53,2.341-8.424,5.59-9.047,6.013c-0.941,0.639-1.845,0.932-3.467,0.466c-1.226-0.352-2.423-0.772-2.889-0.932	C9.384,25.282,9.81,24.484,11.553,23.717z"/>
+        </svg>
+      </a>
+      <a href="https://instagram.com/bael_library" target="_blank" style="margin: 0 10px; display: inline-block;">
+        <img src="https://img.icons8.com/?size=100&id=Xy10Jcu1L2Su&format=png&color=000000" width="40" height="40" alt="Instagram">
+      </a>
+    </div>
+    <p style="text-align: center; color: #777; font-size: 0.9em; margin-top: 10px;">© 2025 Bael Library</p>
+  </footer>
+
+  <script>
+  // Сброс прокрутки при загрузке
+    window.addEventListener('load', () => { window.scrollTo(0, 0); });
+    // Скрипт для карусели книг
+    let scrollPaused = false;
+    function scrollBooks(direction) {
+      if (scrollPaused) return;
+      const container = document.querySelector('.scroll-container');
+      const amount = direction === 'left' ? -300 : 300;
+      container.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+    setInterval(() => {
+      const container = document.querySelector('.scroll-container');
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
+      if (scrollPaused) return;
+      if (container.scrollLeft >= maxScrollLeft - 10) {
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        scrollBooks('right');
+      }
+    }, 5000);
+    document.querySelectorAll('.scroll-container > div').forEach(card => {
+      card.addEventListener('mouseenter', () => scrollPaused = true);
+      card.addEventListener('mouseleave', () => scrollPaused = false);
+    });
+
+    /* Поп-ап подписки временно отключён
+// setTimeout(() => {
+//   document.getElementById('subscribe-modal').style.display = 'flex';
+// }, 10000); // Показать через 10 секунд
+// document.querySelector('#subscribe-modal .close-btn').addEventListener('click', () => {
+//   document.getElementById('subscribe-modal').style.display = 'none';
+// });
+*/
+  </script>
+</body>
+</html>
